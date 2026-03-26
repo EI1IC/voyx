@@ -1,0 +1,136 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: sans-serif;
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 320px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-right: 1px solid #ddd;
+}
+
+.sidebar h2 {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 13px;
+    color: #555;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+button:hover {
+    background: #2980b9;
+}
+
+button:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+}
+
+.results {
+    margin-top: 15px;
+    padding: 10px;
+    background: white;
+    border-radius: 3px;
+    display: none;
+}
+
+.results.active {
+    display: block;
+}
+
+.result-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.warning {
+    color: #e74c3c;
+    font-size: 13px;
+    margin-top: 8px;
+    display: none;
+}
+
+.warning.show {
+    display: block;
+}
+
+#map {
+    flex: 1;
+}
+
+.loading {
+    text-align: center;
+    padding: 8px;
+    color: #777;
+    display: none;
+    font-size: 13px;
+}
+
+.leaflet-attribution-flag {
+    display: none;
+}
+
+/* ... существующие стили ... */
+
+.btn-secondary {
+    background: #95a5a6 !important;
+}
+
+.btn-secondary:hover {
+    background: #7f8c8d !important;
+}
+
+.btn-remove {
+    background: #e74c3c !important;
+    padding: 8px 12px !important;
+}
+
+.btn-remove:hover {
+    background: #c0392b !important;
+}
+
+.waypoint-group {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#segments-container {
+    font-size: 13px;
+    color: #555;
+}
