@@ -22,8 +22,6 @@ Thumbs.db
 # node
 node_modules/
 
-# docs build
-docs/
 
 # IDE
 .idea/
