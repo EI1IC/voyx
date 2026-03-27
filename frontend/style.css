@@ -102,35 +102,102 @@ button:disabled {
     display: none;
 }
 
-/* ... существующие стили ... */
+/* Responsive Design */
+@media (max-width: 1760px) {
+    .main-title {
+        font-size: 150px;
+        left: -7px;
+    }
 
-.btn-secondary {
-    background: #95a5a6 !important;
+    .main-info {
+        max-width: 640px;
+    }
 }
 
-.btn-secondary:hover {
-    background: #7f8c8d !important;
+@media (max-width: 1200px) {
+    .main-info {
+        max-width: 540px;
+    }
+
+    .main {
+        padding: 111px 20px 20px;
+    }
+
+    .main-title {
+        font-size: 120px;
+        left: -4px;
+    }
+
+    .main-title-ghost {
+        font-size: 220px;
+    }
 }
 
-.btn-remove {
-    background: #e74c3c !important;
-    padding: 8px 12px !important;
+@media (max-width: 1024px) {
+    .main-title {
+        margin-top: 30px;
+    }
+
+    .main {
+        flex-direction: column-reverse;
+    }
+
+    .main-image {
+        max-width: 350px;
+        position: absolute;
+        left: 370px;
+        top: 370px;
+    }
+
+    .main-info {
+        max-width: 100%;
+    }
+
+    .main-actions {
+        gap: 10px;
+    }
+
+    .main-actions .button {
+        height: 50px;
+        font-size: 14px;
+        width: auto;
+        max-width: 300px;
+    }
+
+    .main-description {
+        max-width: 350px;
+    }
 }
 
-.btn-remove:hover {
-    background: #c0392b !important;
+@media (max-width: 570px) {
+    .main-title {
+        font-size: 88px;
+    }
+
+    .main-description {
+        max-width: 100%
+    }
+
+    .main-actions {
+       width: 100%;
+    }
+
+    .main-actions .button {
+        width: 100%;
+        max-width: 100%
+    }
+
+    .main-image {
+        max-width: 650px;
+        position: absolute;
+        left: 170px;
+        top: 70px;
+        opacity: 0.2;
+    }
 }
 
-.waypoint-group {
-    animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-#segments-container {
-    font-size: 13px;
-    color: #555;
+@media (max-width: 400px) {
+    .main-title {
+        font-size: 70px;
+    }
 }
