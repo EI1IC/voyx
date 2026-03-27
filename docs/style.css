@@ -102,35 +102,77 @@ button:disabled {
     display: none;
 }
 
-/* ... существующие стили ... */
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
 
-.btn-secondary {
-    background: #95a5a6 !important;
+    .sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        padding: 10px;
+    }
+
+    .sidebar h2 {
+        font-size: 1rem;
+        margin-bottom: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 10px;
+    }
+
+    .form-group label {
+        font-size: 12px;
+    }
+
+    .form-group input {
+        padding: 6px;
+        font-size: 14px;
+    }
+
+    button {
+        padding: 8px;
+        font-size: 13px;
+    }
+
+    #map {
+        height: 60vh;
+        flex: none;
+    }
 }
 
-.btn-secondary:hover {
-    background: #7f8c8d !important;
-}
+@media (max-width: 480px) {
+    .sidebar {
+        padding: 8px;
+    }
 
-.btn-remove {
-    background: #e74c3c !important;
-    padding: 8px 12px !important;
-}
+    .sidebar h2 {
+        font-size: 0.9rem;
+    }
 
-.btn-remove:hover {
-    background: #c0392b !important;
-}
+    .form-group input {
+        padding: 5px;
+        font-size: 13px;
+    }
 
-.waypoint-group {
-    animation: fadeIn 0.3s ease;
-}
+    button {
+        padding: 6px;
+        font-size: 12px;
+    }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+    .result-row {
+        font-size: 13px;
+    }
 
-#segments-container {
-    font-size: 13px;
-    color: #555;
+    .warning {
+        font-size: 12px;
+    }
+
+    .loading {
+        font-size: 12px;
+    }
 }
