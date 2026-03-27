@@ -115,6 +115,15 @@ button:disabled {
 }
 
 @media (max-width: 1200px) {
+    .sidebar {
+        width: 260px;
+        min-width: 260px;
+    }
+
+    #map {
+        min-width: calc(100vw - 260px);
+    }
+
     .main-info {
         max-width: 540px;
     }
@@ -199,5 +208,72 @@ button:disabled {
 @media (max-width: 400px) {
     .main-title {
         font-size: 70px;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        min-width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        padding: 10px;
+    }
+
+    .sidebar h2 {
+        font-size: 1rem;
+        margin-bottom: 10px;
+    }
+
+    .form-group label {
+        font-size: 12px;
+    }
+
+    .form-group input {
+        padding: 6px;
+        font-size: 14px;
+    }
+
+    button {
+        padding: 8px;
+        font-size: 13px;
+    }
+
+    #map {
+        height: 50vh;
+        flex: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar h2 {
+        font-size: 0.9rem;
+    }
+
+    .form-group input {
+        padding: 5px;
+        font-size: 13px;
+    }
+
+    button {
+        padding: 6px;
+        font-size: 12px;
+    }
+
+    .result-row {
+        font-size: 13px;
+    }
+
+    .warning {
+        font-size: 12px;
+    }
+
+    .loading {
+        font-size: 12px;
     }
 }
