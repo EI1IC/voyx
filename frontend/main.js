@@ -1,5 +1,6 @@
 import './style.css'
 import maplibregl from 'maplibre-gl';
+import Toastify from 'toastify-js';
 
 // Инициализация карты
 const map = new maplibregl.Map({
@@ -26,6 +27,32 @@ const markers = [];
 // Backend API URL
 const currentHost = window.location.hostname;
 const API_BASE_URL = "https://voyx-api.onrender.com"
+
+function showToast(message, type = 'info') {
+    const colors = {
+        success: '#14752a', // Зеленый
+        error: '#9e111f',   // Красный
+        warning: '#d5b721', // Желтый
+        info: '#062b6c'     // Синий (как ваша тема)
+    };
+
+    Toastify({
+        text: message,
+        duration: 4000, // Время показа в мс
+        gravity: "top", // Положение: top или bottom
+        position: "center", // left, center, right
+        style: {
+            background: colors[type] || colors.info,
+            color: "#fff",
+            borderRadius: "10px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+            fontWeight: "500",
+            fontSize: "14px"
+        },
+        close: true, // Крестик закрытия
+        stopOnFocus: true, // Пауза при наведении
+    }).showToast();
+}
 
 // Функции управления промежуточными точками (без изменений логики UI)
 function addWaypoint() {
@@ -140,7 +167,7 @@ async function calculateRoute() {
 
     // Валидация
     if (!startAddr.trim() || !endAddr.trim()) {
-        alert('Пожалуйста, заполните адреса старта и финиша');
+        showToast('Пожалуйста, заполните адреса старта и финиша', 'warning');
         return;
     }
 
@@ -288,7 +315,8 @@ async function calculateRoute() {
 
     } catch (err) {
         console.error('💥 Ошибка:', err);
-        alert('Ошибка: ' + err.message);
+        console.error(err.message)
+        showToast('Ошибка сервера', 'error');
     } finally {
         btn.disabled = false;
         loading.style.display = 'none';
