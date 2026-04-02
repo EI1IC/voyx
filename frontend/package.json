@@ -19,5 +19,8 @@
   "license": "ISC",
   "devDependencies": {
     "vite": "^8.0.3"
+  },
+  "dependencies": {
+    "maplibre-gl": "^5.21.1"
   }
 }
