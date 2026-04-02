@@ -6,6 +6,15 @@ body {
     height: 100vh;
 }
 
+.main-title{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    margin: 0 0 10px 0; 
+}
+
 .sidebar {
     display: flex;
     flex-direction: column;
@@ -32,14 +41,15 @@ body {
     display: flex;
     align-items: center;
     margin-top: 6px;
-    gap: 10px;
+    margin-bottom: 6px;
+    gap: 5px;
     border: 1px solid #1111111A;
     background: #FAFAFA;
     border-radius: 10px;
     padding: 10px 12px;
     position: relative;
     box-sizing: border-box;
-    height: 50px;
+    height: 40px;
     overflow: hidden;
 }
 
@@ -71,15 +81,79 @@ input::placeholder, textarea::placeholder {
     color: #7C7C7C;
 }
 
+.waypoint-group {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+/* Стили для label с иконкой и текстом */
+.waypoint-group label {
+    display: flex;             /* Выстраиваем иконку и текст в ряд */
+    align-items: center;       /* Центрируем по вертикали */
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 16px;
+}
+
+/* Стили самой SVG иконки */
+.waypoint-icon {
+    width: 40px;               /* Увеличенный размер */
+    height: 40px;
+    margin-right: 12px;        /* Отступ между иконкой и текстом */
+    flex-shrink: 0;            /* Запрещаем иконке сжиматься */
+    display: block;
+}
+
+/* Текстовая часть */
+.waypoint-text {
+    white-space: nowrap;
+    font-size: 12px;      /* Текст не переносится */
+}
+
+/* Строка с input и кнопкой */
+.waypoint-group .input-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Поле ввода */
+.waypoint-input {
+    flex: 1;
+    padding: 2px;
+    border: none;
+    font-size: 14px;
+}
+
 button {
     width: 100%;
     padding: 10px;
-    background: #3498db;
+    background: #062b6c;
+    margin-bottom: 5px;
     color: white;
     border: none;
-    border-radius: 3px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 14px;
+}
+
+.remove-btn{
+    width: auto;
+    padding: 8px 4px;
+    color:black;
+    background:#FAFAFA;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.remove-btn:hover {
+    color:red;
+    background:#FAFAFA;
 }
 
 button:hover {
@@ -121,8 +195,18 @@ button:disabled {
     display: block;
 }
 
+/* Добавить или обновить стиль для #map */
 #map {
-    flex: 1;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 1;
+}
+
+.map-container {
+    width: 100%;
+     height: 500px; 
 }
 
 .loading {
@@ -133,9 +217,6 @@ button:disabled {
     font-size: 13px;
 }
 
-.leaflet-attribution-flag {
-    display: none;
-}
 
 /* Responsive Design */
 @media (max-width: 1760px) {
@@ -178,10 +259,6 @@ button:disabled {
 }
 
 @media (max-width: 1024px) {
-    .main-title {
-        margin-top: 30px;
-    }
-
     .main {
         flex-direction: column-reverse;
     }

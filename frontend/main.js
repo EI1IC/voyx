@@ -1,47 +1,79 @@
 import './style.css'
+import maplibregl from 'maplibre-gl';
 
-const map = L.map('map').setView([58.5967, 49.6074], 13);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://osm.org/copyright">OSM</a>'
-}).addTo(map);
+// Инициализация карты
+const map = new maplibregl.Map({
+    container: 'map',
+    style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json', // Стильный минималистичный стиль без лишних логотипов
+    center: [49.6074, 58.5967], // [lng, lat]
+    zoom: 13,
+    attributionControl: false // Отключаем стандартную плашку атрибуции для чистого вида
+});
 
-let routeLayer, markers = [];
+// Добавляем навигацию (зум + компас)
+map.addControl(new maplibregl.NavigationControl(), 'top-right');
 
-// Backend API URL (можно переопределить через переменные окружения)
+map.on('error', (e) => {
+    console.error('Ошибка загрузки карты:', e);
+    // Можно добавить фолбэк или уведомление, если карта критически важна
+});
+
+// Глобальные переменные для хранения объектов карты
+let routeSource = null;
+let routeLayer = null;
+const markers = [];
+
+// Backend API URL
 const currentHost = window.location.hostname;
-const API_BASE_URL = currentHost.endsWith('app.github.dev') 
-    ? `https://${currentHost.replace('-3000', '-8000')}` 
+const API_BASE_URL = currentHost.endsWith('app.github.dev')
+    ? `https://${currentHost.replace('-3000', '-8000')}`
     : 'http://localhost:8000';
 
+// Функции управления промежуточными точками (без изменений логики UI)
 function addWaypoint() {
     const container = document.getElementById('waypoints-container');
     const div = document.createElement('div');
     div.className = 'form-group waypoint-group';
-    
+
     const waypointNumber = document.querySelectorAll('.waypoint-input').length + 1;
-    
+
+    const svgPoint = `
+        <svg class="waypoint-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <path d="M256 480 
+                C 180 350, 140 200, 140 200 
+                A 116 116 0 1 1 372 200 
+                C 372 200, 332 350, 256 480 Z" 
+                fill="#1F3178"/>
+        
+        <!-- Белый круг в центре -->
+        <circle cx="256" cy="200" r="48" fill="#FFFFFF"/>
+        </svg>
+    `;
+
     div.innerHTML = `
-        <label>🔹 Точка ${waypointNumber}</label>
-        <div class="form-group">
-            <input type="text" class="waypoint-input" placeholder="Адрес промежуточной точки" style="flex: 1;">
-            <button onclick="removeWaypoint(this)" class="btn-remove" style="width: auto; padding: 8px 12px; background: #e74c3c;">✕</button>
-        </div>
+            <span class="waypoint-text">${waypointNumber}</span>
+            <input type="text" class="waypoint-input" placeholder="Промежуточная точка">
+            <button class="btn-remove remove-btn">✕</button>
     `;
     container.appendChild(div);
     updateWaypointNumbers();
 }
 
 function removeWaypoint(button) {
-    button.parentElement.parentElement.remove();
-    updateWaypointNumbers();
+    // Удаляем родительский элемент .waypoint-group
+    const group = button.closest('.waypoint-group');
+    if (group) {
+        group.remove();
+        updateWaypointNumbers();
+    }
 }
 
 function updateWaypointNumbers() {
     const waypoints = document.querySelectorAll('.waypoint-group');
     waypoints.forEach((group, index) => {
-        const label = group.querySelector('label');
-        if (label) {
-            label.textContent = `🔹 Точка ${index + 1}`;
+        const textSpan = group.querySelector('.waypoint-text');
+        if (textSpan) {
+            textSpan.textContent = `${index + 1}`;
         }
     });
 }
@@ -51,12 +83,53 @@ function getWaypoints() {
     return Array.from(inputs).map(input => input.value).filter(v => v.trim());
 }
 
+// Создание кастомного маркера с эмодзи
+function createCustomMarker(lng, lat, emoji, color, popupText) {
+    // Создаем DOM элемент для маркера
+    const el = document.createElement('div');
+    el.className = 'custom-marker';
+    el.innerHTML = `<span style="font-size: 24px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));">${emoji}</span>`;
+
+    // Настраиваем маркер MapLibre
+    const marker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
+        .setLngLat([lng, lat])
+        .setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(`<b>${popupText}</b>`))
+        .addTo(map);
+
+    return marker;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Обработчик для кнопки расчета маршрута
     const btn = document.getElementById('calculate-btn');
     if (btn) {
         btn.addEventListener('click', calculateRoute);
     }
+
+    // Обработчик для кнопки добавления точки
+    const addBtn = document.getElementById('add-waypoint-btn');
+    if (addBtn) {
+        addBtn.addEventListener('click', addWaypoint);
+    }
+
+    // ДЕЛЕГИРОВАНИЕ: Обработчик удаления точек (работает даже для динамически созданных)
+    const container = document.getElementById('waypoints-container');
+    if (container) {
+        container.addEventListener('click', (event) => {
+            // Проверяем, был ли клик по кнопке удаления (или её иконке)
+            if (event.target.closest('.remove-btn')) {
+                const button = event.target.closest('.remove-btn');
+                // Удаляем родительский элемент (.waypoint-group)
+                const group = button.closest('.waypoint-group');
+                if (group) {
+                    group.remove();
+                    updateWaypointNumbers();
+                }
+            }
+        });
+    }
 });
+
 
 async function calculateRoute() {
     const startAddr = document.getElementById('start').value;
@@ -82,7 +155,7 @@ async function calculateRoute() {
     try {
         const response = await fetch(`${API_BASE_URL}/api/route`, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 start_address: startAddr,
                 end_address: endAddr,
@@ -94,12 +167,12 @@ async function calculateRoute() {
             const errorText = await response.text();
             throw new Error(`Ошибка сервера: ${response.status} - ${errorText}`);
         }
-        
+
         const res = await response.json();
         const data = res.data;
 
         console.log('✅ Данные получены:', data);
-        
+
         // Валидация ответа
         if (!data || !data.route) {
             throw new Error('Сервер вернул невалидный ответ: отсутствуют данные маршрута');
@@ -108,56 +181,101 @@ async function calculateRoute() {
             throw new Error('Сервер вернул невалидный ответ: отсутствуют waypoints');
         }
 
-        // Очистка старых слоев
-        if (routeLayer) map.removeLayer(routeLayer);
-        if (markers && Array.isArray(markers)) {
-            markers.forEach(m => map.removeLayer(m));
+        // --- ОЧИСТКА КАРТЫ ---
+        // Удаляем старые маркеры
+        markers.forEach(m => m.remove());
+        markers.length = 0;
+
+        // Удаляем старый слой маршрута
+        if (map.getLayer('route-line')) {
+            map.removeLayer('route-line');
         }
-        markers = [];
+        if (map.getSource('route-data')) {
+            map.removeSource('route-data');
+        }
 
-        // ✅ Отрисовка маршрута
-        // Leaflet принимает [lat, lon], а у нас в data.route [lon, lat]
-        const routeCoords = data.route.map(coord => [coord[1], coord[0]]);
-        
+        // --- ОТРИСОВКА МАРШРУТА ---
+        // MapLibre использует [lng, lat]. Бэкенд возвращает [lon, lat], что совпадает.
+        // Преобразуем массив координат в формат GeoJSON LineString
+        const routeCoordinates = data.route.map(coord => [coord[0], coord[1]]);
+
         const routeColor = data.has_barriers ? '#e74c3c' : '#3498db';
-        routeLayer = L.polyline(routeCoords, {
-            color: routeColor, 
-            weight: 5,
-            opacity: 0.8
-        }).addTo(map);
 
-        // ✅ Отрисовка маркеров точек
+        // Добавляем источник данных
+        map.addSource('route-data', {
+            'type': 'geojson',
+            'data': {
+                'type': 'Feature',
+                'properties': {},
+                'geometry': {
+                    'type': 'LineString',
+                    'coordinates': routeCoordinates
+                }
+            }
+        });
+
+        // Добавляем слой линии
+        map.addLayer({
+            'id': 'route-line',
+            'type': 'line',
+            'source': 'route-data',
+            'layout': {
+                'line-join': 'round',
+                'line-cap': 'round'
+            },
+            'paint': {
+                'line-color': routeColor,
+                'line-width': 6,
+                'line-opacity': 0.9
+            }
+        });
+
+        // --- ОТРИСОВКА МАРКЕРОВ ---
         data.waypoints.forEach((wp, i) => {
             const isStart = i === 0;
             const isEnd = i === data.waypoints.length - 1;
-            const color = isStart ? 'green' : (isEnd ? 'red' : 'orange');
-            const icon = isStart ? '📍' : (isEnd ? '🏁' : '🔹');
-            
-            const marker = L.marker([wp.lat, wp.lon])
-                .addTo(map)
-                .bindPopup(`<b>${icon} ${isStart ? 'Старт' : (isEnd ? 'Финиш' : 'Точка ' + i)}</b><br>${wp.address}`);
+
+            let emoji, label;
+            if (isStart) {
+                emoji = '📍';
+                label = 'Старт';
+            } else if (isEnd) {
+                emoji = '🏁';
+                label = 'Финиш';
+            } else {
+                emoji = '🔹';
+                label = `Точка ${i}`;
+            }
+
+            const marker = createCustomMarker(wp.lon, wp.lat, emoji, isStart ? 'green' : (isEnd ? 'red' : 'orange'), `${label}<br>${wp.address}`);
             markers.push(marker);
         });
 
-        // ✅ Масштабирование карты под маршрут
-        map.fitBounds(routeLayer.getBounds(), {padding: [50, 50]});
+        // --- МАСШТАБИРОВАНИЕ ---
+        // Вычисляем границы для отображения всего маршрута
+        const bounds = new maplibregl.LngLatBounds();
+        routeCoordinates.forEach(coord => bounds.extend(coord));
 
-        // ✅ Обновление интерфейса с метриками
+        map.fitBounds(bounds, {
+            padding: { top: 50, bottom: 50, left: 50, right: 50 },
+            duration: 1000 // Плавная анимация
+        });
+
+        // --- ОБНОВЛЕНИЕ ИНТЕРФЕЙСА ---
         document.getElementById('dist').textContent = data.distance_km + ' км';
         document.getElementById('time').textContent = data.time_min + ' мин';
         document.getElementById('points').textContent = data.waypoints.length;
-        
-        // Предупреждение о шлагбаумах
+
         if (data.has_barriers) {
             warning.classList.add('show');
         } else {
             warning.classList.remove('show');
         }
 
-        // ✅ Отображение сегментов (если их больше 1)
+        // Сегменты
         const segmentsContainer = document.getElementById('segments-container');
         if (data.segments && Array.isArray(data.segments) && data.segments.length > 1) {
-            segmentsContainer.innerHTML = '<hr style="margin: 10px 0;"><strong>Сегменты:</strong>' + 
+            segmentsContainer.innerHTML = '<hr style="margin: 10px 0;"><strong>Сегменты:</strong>' +
                 data.segments.map((s, i) => `
                     <div class="result-row" style="font-size: 13px; margin-top: 5px;">
                         <span>${i + 1}. ${s.from.split(',').slice(-2).join(',').trim()} → ${s.to.split(',').slice(-2).join(',').trim()}</span>
@@ -169,12 +287,11 @@ async function calculateRoute() {
         }
 
         results.classList.add('active');
-        
+
     } catch (err) {
         console.error('💥 Ошибка:', err);
         alert('Ошибка: ' + err.message);
     } finally {
-        // Разблокировка интерфейса
         btn.disabled = false;
         loading.style.display = 'none';
     }
