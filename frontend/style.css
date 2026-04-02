@@ -1,12 +1,25 @@
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+}
 
 body {
     font-family: sans-serif;
     display: flex;
     height: 100vh;
+    width: 100vw;
+    overflow: hidden; /* Чтобы не было двойного скролла */
 }
 
-.main-title{
+/* Основной контейнер для гибкости */
+.app-wrapper {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.main-title {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -18,18 +31,20 @@ body {
 .sidebar {
     display: flex;
     flex-direction: column;
-    position: fixed;
+    /* Убрали position: fixed, чтобы работала адаптивность */
+    position: relative; 
     border-radius: 10px;
     box-shadow: 0 7px 20px #0000002e;
     width: 320px;
+    min-width: 320px; /* Фиксируем ширину на десктопе */
     padding: 15px;
     background: #f8f9fa;
     border-right: 1px solid #ddd;
-    left: 20px;
-    top: 20px;
+    margin: 20px 0 20px 20px; /* Отступы как на десктопе */
     max-height: calc(100vh - 40px);
     overflow-y: auto;
     z-index: 1000;
+    flex-shrink: 0;
 }
 
 .sidebar h2 {
@@ -51,8 +66,8 @@ body {
     box-sizing: border-box;
     height: 40px;
     overflow: hidden;
+    flex-shrink: 0;
 }
-
 
 .form-group label {
     display: block;
@@ -86,39 +101,34 @@ input::placeholder, textarea::placeholder {
     width: 100%;
 }
 
-/* Стили для label с иконкой и текстом */
 .waypoint-group label {
-    display: flex;             /* Выстраиваем иконку и текст в ряд */
-    align-items: center;       /* Центрируем по вертикали */
+    display: flex;
+    align-items: center;
     margin-bottom: 8px;
     font-weight: 600;
     color: #2c3e50;
     font-size: 16px;
 }
 
-/* Стили самой SVG иконки */
 .waypoint-icon {
-    width: 40px;               /* Увеличенный размер */
+    width: 40px;
     height: 40px;
-    margin-right: 12px;        /* Отступ между иконкой и текстом */
-    flex-shrink: 0;            /* Запрещаем иконке сжиматься */
+    margin-right: 12px;
+    flex-shrink: 0;
     display: block;
 }
 
-/* Текстовая часть */
 .waypoint-text {
     white-space: nowrap;
-    font-size: 12px;      /* Текст не переносится */
+    font-size: 12px;
 }
 
-/* Строка с input и кнопкой */
 .waypoint-group .input-row {
     display: flex;
     gap: 10px;
     align-items: center;
 }
 
-/* Поле ввода */
 .waypoint-input {
     flex: 1;
     padding: 2px;
@@ -136,24 +146,24 @@ button {
     border-radius: 10px;
     cursor: pointer;
     font-size: 14px;
+    flex-shrink: 0;
 }
 
-.remove-btn{
+.remove-btn {
     width: auto;
     padding: 8px 4px;
-    color:black;
-    background:#FAFAFA;
+    color: black;
+    background: #FAFAFA;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s;
     flex-shrink: 0;
 }
 
 .remove-btn:hover {
-    color:red;
-    background:#FAFAFA;
+    color: red;
+    background: #fff0f0;
 }
 
 button:hover {
@@ -195,18 +205,19 @@ button:disabled {
     display: block;
 }
 
-/* Добавить или обновить стиль для #map */
 #map {
-    width: 100%;
+    flex-grow: 1;
     height: 100%;
+    width: 100%;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    position: relative;
     z-index: 1;
 }
 
 .map-container {
     width: 100%;
-     height: 500px; 
+    height: 100%;
 }
 
 .loading {
@@ -217,171 +228,123 @@ button:disabled {
     font-size: 13px;
 }
 
-
-/* Responsive Design */
-@media (max-width: 1760px) {
-    .main-title {
-        font-size: 150px;
-        left: -7px;
-    }
-
-    .main-info {
-        max-width: 640px;
-    }
-}
-
-@media (max-width: 1200px) {
-    .sidebar {
-        width: 260px;
-        min-width: 260px;
-    }
-
-    #map {
-        min-width: calc(100vw - 260px);
-    }
-
-    .main-info {
-        max-width: 540px;
-    }
-
-    .main {
-        padding: 111px 20px 20px;
-    }
-
-    .main-title {
-        font-size: 120px;
-        left: -4px;
-    }
-
-    .main-title-ghost {
-        font-size: 220px;
-    }
-}
-
-@media (max-width: 1024px) {
-    .main {
-        flex-direction: column-reverse;
-    }
-
-    .main-image {
-        max-width: 350px;
-        position: absolute;
-        left: 370px;
-        top: 370px;
-    }
-
-    .main-info {
-        max-width: 100%;
-    }
-
-    .main-actions {
-        gap: 10px;
-    }
-
-    .main-actions .button {
-        height: 50px;
-        font-size: 14px;
-        width: auto;
-        max-width: 300px;
-    }
-
-    .main-description {
-        max-width: 350px;
-    }
-}
-
-@media (max-width: 570px) {
-    .main-title {
-        font-size: 88px;
-    }
-
-    .main-description {
-        max-width: 100%
-    }
-
-    .main-actions {
-       width: 100%;
-    }
-
-    .main-actions .button {
-        width: 100%;
-        max-width: 100%
-    }
-
-    .main-image {
-        max-width: 650px;
-        position: absolute;
-        left: 170px;
-        top: 70px;
-        opacity: 0.2;
-    }
-}
-
-@media (max-width: 400px) {
-    .main-title {
-        font-size: 70px;
-    }
-}
+/* --- АДАПТИВНОСТЬ --- */
 
 @media (max-width: 768px) {
     body {
         flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
     }
 
-    .sidebar {
+    /* Карта занимает верхние 2/3 экрана */
+    #map {
+        order: 1;
+        height: 67vh; 
         width: 100%;
-        min-width: 100%;
-        height: auto;
-        border-right: none;
-        border-bottom: 1px solid #ddd;
-        padding: 10px;
+        border-radius: 0;
+        min-width: auto;
+        flex-shrink: 0;
     }
 
+    /* Сайдбар занимает нижнюю 1/3 экрана */
+    .sidebar {
+        order: 2;
+        width: 100%;
+        min-width: auto;
+        height: 33vh; /* Ровно 1/3 высоты экрана */
+        max-height: 33vh;
+        margin: 0;
+        padding: 10px;
+        border-radius: 20px 20px 0 0;
+        border-right: none;
+        border-top: 1px solid #ddd;
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden; /* Скролл будет внутри контента */
+        background: #f8f9fa;
+        z-index: 1000;
+    }
+
+    /* Заголовок меньше */
     .sidebar h2 {
         font-size: 1rem;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
+        flex-shrink: 0;
     }
 
-    .form-group label {
+    /* Контейнер для прокрутки форм */
+    .sidebar-content-scroll {
+        flex: 1;
+        overflow-y: auto;
+        padding-right: 5px;
+        min-height: 0; /* Критично для flex скролла */
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Уменьшаем элементы формы */
+    .form-group {
+        height: 32px;
+        padding: 5px 8px;
+        margin-bottom: 4px;
         font-size: 12px;
     }
 
-    .form-group input {
-        padding: 6px;
-        font-size: 14px;
+    .waypoint-group {
+        margin-bottom: 8px;
+    }
+
+    .waypoint-group label {
+        font-size: 13px;
+        margin-bottom: 4px;
+    }
+
+    .waypoint-icon {
+        width: 24px;
+        height: 24px;
+        margin-right: 6px;
+    }
+
+    .waypoint-input {
+        font-size: 12px;
     }
 
     button {
-        padding: 8px;
-        font-size: 13px;
+        padding: 6px;
+        font-size: 12px;
+        margin-bottom: 4px;
     }
 
+    .remove-btn {
+        padding: 4px 8px;
+        font-size: 16px;
+    }
+
+    /* Скроллбар */
+    .sidebar-content-scroll::-webkit-scrollbar {
+        width: 4px;
+    }
+    .sidebar-content-scroll::-webkit-scrollbar-thumb {
+        background-color: #ccc;
+        border-radius: 2px;
+    }
 }
 
 @media (max-width: 480px) {
     .sidebar h2 {
         font-size: 0.9rem;
     }
-
-    .form-group input {
-        padding: 5px;
-        font-size: 13px;
-    }
-
-    button {
-        padding: 6px;
-        font-size: 12px;
-    }
-
+    
     .result-row {
-        font-size: 13px;
+        font-size: 12px;
+        flex-direction: column;
+        gap: 2px;
     }
 
     .warning {
-        font-size: 12px;
-    }
-
-    .loading {
-        font-size: 12px;
+        font-size: 11px;
     }
 }
