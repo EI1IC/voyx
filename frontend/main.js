@@ -25,9 +25,7 @@ const markers = [];
 
 // Backend API URL
 const currentHost = window.location.hostname;
-const API_BASE_URL = currentHost.endsWith('app.github.dev')
-    ? `https://${currentHost.replace('-3000', '-8000')}`
-    : 'http://localhost:8000';
+const API_BASE_URL = "https://voyx-api.onrender.com/"
 
 // Функции управления промежуточными точками (без изменений логики UI)
 function addWaypoint() {
