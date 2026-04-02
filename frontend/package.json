@@ -4,12 +4,20 @@
   "description": "Frontend for route calculation app",
   "private": true,
   "scripts": {
-    "start": "python3 -m http.server 3000 --directory .",
-    "dev": "python3 -m http.server 3000 --directory .",
-    "build": "echo 'Frontend is static files'",
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "test": "echo \"No tests configured\" && exit 0"
   },
-  "keywords": ["routing", "maps", "leaflet"],
+  "keywords": [
+    "routing",
+    "maps",
+    "leaflet"
+  ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "vite": "^8.0.3"
+  }
 }

@@ -1,3 +1,5 @@
+import './style.css'
+
 const map = L.map('map').setView([58.5967, 49.6074], 13);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://osm.org/copyright">OSM</a>'
@@ -6,7 +8,10 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 let routeLayer, markers = [];
 
 // Backend API URL (можно переопределить через переменные окружения)
-const API_BASE_URL = window.API_BASE_URL || 'http://localhost:8000';
+const currentHost = window.location.hostname;
+const API_BASE_URL = currentHost.endsWith('app.github.dev') 
+    ? `https://${currentHost.replace('-3000', '-8000')}` 
+    : 'http://localhost:8000';
 
 function addWaypoint() {
     const container = document.getElementById('waypoints-container');
@@ -17,7 +22,7 @@ function addWaypoint() {
     
     div.innerHTML = `
         <label>🔹 Точка ${waypointNumber}</label>
-        <div style="display: flex; gap: 5px;">
+        <div class="form-group">
             <input type="text" class="waypoint-input" placeholder="Адрес промежуточной точки" style="flex: 1;">
             <button onclick="removeWaypoint(this)" class="btn-remove" style="width: auto; padding: 8px 12px; background: #e74c3c;">✕</button>
         </div>
@@ -46,11 +51,18 @@ function getWaypoints() {
     return Array.from(inputs).map(input => input.value).filter(v => v.trim());
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('calculate-btn');
+    if (btn) {
+        btn.addEventListener('click', calculateRoute);
+    }
+});
+
 async function calculateRoute() {
     const startAddr = document.getElementById('start').value;
     const endAddr = document.getElementById('end').value;
     const waypoints = getWaypoints();
-    const btn = document.getElementById('btn');
+    const btn = document.getElementById('calculate-btn');
     const loading = document.getElementById('loading');
     const results = document.getElementById('results');
     const warning = document.getElementById('barrier-warning');

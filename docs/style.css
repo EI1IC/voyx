@@ -8,9 +8,16 @@ body {
 
 .sidebar {
     width: 320px;
+    height: 90%;
     padding: 15px;
     background: #f8f9fa;
     border-right: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 7px 20px #0000002e;
+    left: 20px;
+    top: 110px;
+    bottom: 20px;
+    overflow: hidden;
 }
 
 .sidebar h2 {
@@ -228,7 +235,7 @@ button:disabled {
     .sidebar {
         width: 100%;
         min-width: 100%;
-        height: auto;
+        height: 90%;
         border-right: none;
         border-bottom: 1px solid #ddd;
         padding: 10px;
