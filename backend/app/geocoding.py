@@ -32,6 +32,6 @@ def geocode_address(address_query: str, city: str = "Kirov, Russia") -> tuple[fl
         if not (south <= lat <= north and west <= lon <= east):
             raise ValueError(f"Координаты вне диапазона Кирова: {lat}, {lon}")
         
-        return lat, lon
+        return lon, lat
     except Exception as e:
         raise ValueError(f"Не удалось найти адрес '{address_query}': {str(e)}")
